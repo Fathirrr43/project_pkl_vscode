@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
-// import 'package:myapp/views/auth/register.dart'; // Import your Register page
-import 'register.dart'; // Corrected import assuming register.dart is in the same folder
-// import 'package:myapp/views/forgot_password.dart'; // Assuming you have a forgot password page
+import 'package:tridaya_travel/auth/lupasandi.dart';
+import 'package:tridaya_travel/auth/register.dart';
+
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -51,9 +51,9 @@ class _LoginState extends State<Login> {
         iconTheme: IconThemeData(color: Colors.black), // Set back button color
         centerTitle: true,
       ),
-      extendBodyBehindAppBar: true, // Extend body behind app bar
       body: Padding(
         padding: const EdgeInsets.all(24.0), // Increased padding
+//  automaticallyImplyLeading: false,
         child: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -64,7 +64,7 @@ class _LoginState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    'Selamat Datang Kembali',
+                    'Selamat Datang',
                     style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -82,7 +82,7 @@ class _LoginState extends State<Login> {
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      hintText: 'Masukkan email',
+                      hintText: 'Masukkan Email',
                       filled: true,
                       fillColor: Colors.grey[200],
                       border: OutlineInputBorder(
@@ -127,7 +127,7 @@ class _LoginState extends State<Login> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ForgotPasswordPage(),
+                              builder: (context) => Lupasandi(),
                             ),
                           ); // Example navigation
                         },

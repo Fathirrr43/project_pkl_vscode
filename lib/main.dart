@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tridaya_travel/auth/login.dart';
 import 'package:tridaya_travel/auth/onboarding.dart';
+import 'package:tridaya_travel/views/faq.dart';
 import 'package:tridaya_travel/views/home.dart';
 import 'package:provider/provider.dart';
-
-// Import the BottomNavigationBarProvider you created
-import 'package:tridaya_travel/views/home.dart'; // Assuming BottomNavigationBarProvider is in home.dart
+import 'package:tridaya_travel/views/panduan.dart';
+import 'package:tridaya_travel/views/keberangkatan.dart';
+import 'package:tridaya_travel/views/lokasi.dart';
+import 'package:tridaya_travel/views/profile.dart';
+import 'package:tridaya_travel/views/shalat.dart';
+import 'package:tridaya_travel/views/umrah.dart';
 
 void main() {
   runApp(
@@ -28,9 +32,16 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => Home(),
-        '/login': (context) => const Login(),
-        // '/home': (context) => const Home(),
         '/onboarding': (context) => const OnBoarding(),
+        '/login': (context) => const Login(),
+        '/home': (context) => const Home(),
+        '/umrah': (context) => const PaketUmrah(),
+        '/lokasi': (context) => const LokasiCabang(),
+        '/sholat': (context) => const WaktuShalat(),
+        '/faq': (context) => const Faq(),
+        '/jadwal': (context) => const Panduan(),
+        '/keberangkatan': (context) => const Keberangkatan(),
+        '/profile': (context) => const Profile(),
       },
     );
   }

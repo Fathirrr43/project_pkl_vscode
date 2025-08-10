@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tridaya_travel/views/panduan.dart';
+import 'package:tridaya_travel/views/keberangkatan.dart';
+import 'package:tridaya_travel/views/profile.dart';
 import 'package:tridaya_travel/widgets/textview.dart';
 import 'package:tridaya_travel/views/faq.dart' show Faq;
 import 'package:tridaya_travel/views/lokasi.dart';
-import 'package:tridaya_travel/views/sholat.dart';
+import 'package:tridaya_travel/views/shalat.dart';
 import 'package:tridaya_travel/views/umrah.dart';
+import 'package:tridaya_travel/views/berita.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
 class BottomNavigationBarProvider with ChangeNotifier {
@@ -25,13 +30,46 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // Data berita terbaru
+  final List<Map<String, dynamic>> beritaUtamaHome = [
+    {
+      "judul": "Kuota Haji 2026 Diumumkan 10 Juli 2025, Kemenag Tunggu Keputusan Saudi",
+      "waktu": "Baru saja",
+      "gambar": "assets/images/berita1.png",
+      "url": "https://www.suarasurabaya.net/kelanakota/2025/kuota-haji-2026-diumumkan-10-juli-2025-kemenag-tunggu-keputusan-saudi/",
+      "deskripsi": "Informasi terbaru terkait kuota haji 2026."
+    },
+    {
+      "judul": "Perluasan Tahap Ketiga Masjidil Haram: Area Luas, Fasilitas Meningkat",
+      "waktu": "Baru saja",
+      "gambar": "assets/images/berita2.png",
+      "url": "https://www.nu.or.id/internasional/perluasan-tahap-ketiga-masjidil-haram-selesai-bisa-tampung-3-juta-orang-4DZ4y",
+      "deskripsi": "Peningkatan fasilitas dan kapasitas Masjidil Haram."
+    },
+    {
+      "judul": "Paviliun Bandara Jeddah, Ruang Singgah Jamaah Haji Penuh Cerita",
+      "waktu": "Baru saja",
+      "gambar": "assets/images/berita4.png",
+      "url": "https://rm.id/baca-berita/humaniora/266921/kabar-dari-tanah-suci-paviliun-bandara-jeddah-ruang-singgah-jemaah-haji-penuh-cerita",
+      "deskripsi": "Kisah-kisah menarik dari Paviliun Bandara Jeddah."
+    },
+  ];
+
+  // Fungsi buka url
+  Future<void> _bukaUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomNavigationBarProvider =
         Provider.of<BottomNavigationBarProvider>(context);
 
     return Scaffold(
-      backgroundColor: Color(0xFFF6F8FB),
+      backgroundColor: const Color(0xFFF6F8FB),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -40,7 +78,7 @@ class _HomeState extends State<Home> {
               Container(
                 width: double.infinity,
                 height: 265,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF1E4584), Color(0xFF3A7BD5)],
                     begin: Alignment.topLeft,
@@ -48,11 +86,12 @@ class _HomeState extends State<Home> {
                   ),
                   image: DecorationImage(
                     image: AssetImage('assets/images/header.png'),
-                    fit: BoxFit.cover, // Mengisi penuh, dipotong jika perlu
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
+
               // Pelayanan Section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -63,24 +102,16 @@ class _HomeState extends State<Home> {
                       EdgeInsets.zero,
                       "Pelayanan",
                       TextAlign.left,
-                      Colors.black, // warna hitam
+                      Colors.black,
                       FontWeight.bold,
                       18.0,
-                    ),
-                    textView(
-                      EdgeInsets.zero,
-                      "Lainnya",
-                      TextAlign.right,
-                      Colors.black, // warna hitam
-                      FontWeight.w500,
-                      14.0,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-              // Service Icons (Restored)
+              // Service Icons
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
@@ -90,51 +121,36 @@ class _HomeState extends State<Home> {
                       assetIcon: 'assets/icons/umrah.png',
                       label: "Paket Umrah",
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PaketUmrah()),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PaketUmrah()));
                       },
                     ),
                     ServiceIcon(
                       assetIcon: 'assets/icons/cabang.png',
                       label: "Lokasi Cabang",
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LokasiCabang(),
-                          ),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => LokasiCabang()));
                       },
                     ),
                     ServiceIcon(
                       assetIcon: 'assets/icons/sholat.png',
                       label: "Waktu Shalat",
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => WaktuShalat(),
-                          ),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => WaktuShalat()));
                       },
                     ),
                     ServiceIcon(
                       assetIcon: 'assets/icons/faq.png',
                       label: "FAQ",
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Faq()),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Faq()));
                       },
                     ),
                   ],
                 ),
               ),
 
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
+
               // Berita Section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -145,45 +161,50 @@ class _HomeState extends State<Home> {
                       EdgeInsets.zero,
                       "Berita",
                       TextAlign.left,
-                      Colors.black, // warna hitam
+                      Colors.black,
                       FontWeight.bold,
                       18.0,
                     ),
-                    textView(
-                      EdgeInsets.zero,
-                      "Lainnya",
-                      TextAlign.right,
-                      Colors.black, // warna hitam
-                      FontWeight.w500,
-                      14.0,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Berita()));
+                      },
+                      child: textView(
+                        EdgeInsets.zero,
+                        "Lainnya",
+                        TextAlign.right,
+                        Colors.black,
+                        FontWeight.w500,
+                        14.0,
+                      ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: NewsCard(
-                        image: 'assets/images/makkah.png',
-                        title: 'Kenaikan Jamaah Tahun 2023',
-                        desc: 'Informasi terbaru seputar jamaah dan umrah.',
+                    for (var i = 0; i < 3; i++)
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: i < 2 ? 12 : 0),
+                          child: InkWell(
+                            onTap: () => _bukaUrl(beritaUtamaHome[i]["url"] ?? ""),
+                            child: NewsCardNetwork(
+                              imageUrl: beritaUtamaHome[i]["gambar"] ?? "",
+                              title: beritaUtamaHome[i]["judul"] ?? "",
+                              desc: beritaUtamaHome[i]["deskripsi"] ?? "",
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: NewsCard(
-                        image: 'assets/images/madinah.png',
-                        title: 'Panduan Lengkap Ibadah Jamaah',
-                        desc: 'Tips dan panduan ibadah selama di tanah suci.',
-                      ),
-                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -193,22 +214,31 @@ class _HomeState extends State<Home> {
         currentIndex: bottomNavigationBarProvider.selectedIndex,
         onTap: (index) {
           bottomNavigationBarProvider.updateIndex(index);
-          // TODO: Implement navigation to different screens based on index
-          // For now, let's just print the selected index.
-          print('Selected index: $index');
+          switch (index) {
+            case 1:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Keberangkatan()));
+              break;
+            case 2:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Panduan()));
+              break;
+            case 3:
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
+              break;
+            default:
+          }
         },
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 12,
         unselectedFontSize: 12,
         showUnselectedLabels: true,
-        selectedItemColor: Color(0xFF1E4584),
+        selectedItemColor: const Color(0xFF1E4584),
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
               bottomNavigationBarProvider.selectedIndex == 0
-                  ? 'assets/icons/beranda2.png' // Inactive icon
-                  : 'assets/icons/beranda.png', // Active icon
+                  ? 'assets/icons/beranda2.png'
+                  : 'assets/icons/beranda.png',
               width: 24,
               height: 24,
             ),
@@ -217,8 +247,8 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Image.asset(
               bottomNavigationBarProvider.selectedIndex == 1
-                  ? 'assets/icons/keberangkatan2.png' // Inactive icon
-                  : 'assets/icons/keberangkatan.png', // Active icon
+                  ? 'assets/icons/keberangkatan2.png'
+                  : 'assets/icons/keberangkatan.png',
               width: 24,
               height: 24,
             ),
@@ -227,22 +257,22 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Image.asset(
               bottomNavigationBarProvider.selectedIndex == 2
-                  ? 'assets/icons/jadwal2.png' // Inactive icon
-                  : 'assets/icons/jadwal.png', // Active icon
+                  ? 'assets/icons/panduan2.png'
+                  : 'assets/icons/panduan.png',
               width: 24,
               height: 24,
             ),
-            label: 'Jadwal',
+            label: 'Panduan',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               bottomNavigationBarProvider.selectedIndex == 3
-                  ? 'assets/icons/profile2.png' // Inactive icon
-                  : 'assets/icons/profile.png', // Active icon
+                  ? 'assets/icons/profile2.png'
+                  : 'assets/icons/profile.png',
               width: 24,
               height: 24,
             ),
-            label: 'Profil',
+            label: 'Profile',
           ),
         ],
       ),
@@ -250,15 +280,15 @@ class _HomeState extends State<Home> {
   }
 }
 
-// Assuming you have a NewsCard widget defined elsewhere
-class NewsCard extends StatelessWidget {
-  final String image;
+// NewsCardNetwork untuk gambar dari URL
+class NewsCardNetwork extends StatelessWidget {
+  final String imageUrl;
   final String title;
   final String desc;
 
-  const NewsCard({
+  const NewsCardNetwork({
     Key? key,
-    required this.image,
+    required this.imageUrl,
     required this.title,
     required this.desc,
   }) : super(key: key);
@@ -274,7 +304,7 @@ class NewsCard extends StatelessWidget {
             color: Colors.grey.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -282,12 +312,17 @@ class NewsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-            child: Image.asset(
-              image,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+            child: Image.network(
+              imageUrl,
               height: 100,
               width: double.infinity,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                height: 100,
+                color: Colors.grey[300],
+                child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+              ),
             ),
           ),
           Padding(
@@ -303,7 +338,7 @@ class NewsCard extends StatelessWidget {
                   FontWeight.bold,
                   14.0,
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 textView(
                   EdgeInsets.zero,
                   desc,
@@ -339,12 +374,8 @@ class ServiceIcon extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Image.asset(
-            assetIcon,
-            width: 40,
-            height: 40,
-          ),
-          SizedBox(height: 4),
+          Image.asset(assetIcon, width: 40, height: 40),
+          const SizedBox(height: 4),
           textView(
             EdgeInsets.zero,
             label,

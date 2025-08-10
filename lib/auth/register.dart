@@ -57,7 +57,7 @@ class _RegisterState extends State<Register> {
         iconTheme: IconThemeData(color: Colors.black), // Set back button color
         centerTitle: true,
       ),
-      extendBodyBehindAppBar: true, // Extend body behind app bar
+      // extendBodyBehindAppBar: true, // Extend body behind app bar
       body: Padding(
         padding: const EdgeInsets.all(24.0), // Increased padding
         child: Center(
