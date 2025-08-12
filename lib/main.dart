@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tridaya_travel/auth/login.dart';
 import 'package:tridaya_travel/auth/onboarding.dart';
+import 'package:tridaya_travel/auth/splashscreen.dart';
+import 'package:tridaya_travel/views/doa.dart';
 import 'package:tridaya_travel/views/faq.dart';
 import 'package:tridaya_travel/views/home.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => Home(),
+        '/': (context) => SplashScreen(),
         '/onboarding': (context) => const OnBoarding(),
         '/login': (context) => const Login(),
         '/home': (context) => const Home(),

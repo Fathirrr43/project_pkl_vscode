@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tridaya_travel/widgets/textview.dart';
+import 'package:tridaya_travel/views/detailpaket.dart'; // Import your Detailpaket page
+
 
 class PaketUmrah extends StatefulWidget {
   const PaketUmrah({super.key});
@@ -11,7 +13,7 @@ class PaketUmrah extends StatefulWidget {
 class _PaketUmrahState extends State<PaketUmrah> {
   @override
   Widget build(BuildContext context) {
-        return Scaffold(
+    return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -111,14 +113,14 @@ class _PaketUmrahState extends State<PaketUmrah> {
                   18.0,
                 ),
               ),
-             SizedBox(
+              SizedBox(
                 height: 288,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
                     const SizedBox(width: 16),
                     _buildUmrahPackageCard(
-                      'assets/images/paketirit.png', // Image path for Umrah Irit
+                      'assets/images/paketirit.png',
                       'Umrah Irit',
                       'Rp 28.900.000/orang',
                       const Color(0xFF1E293B),
@@ -130,7 +132,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                     ),
                     const SizedBox(width: 16),
                     _buildUmrahPackageCard(
-                      'assets/images/paketelit.png', // Corrected Image path for Umrah Elit
+                      'assets/images/paketelit.png',
                       'Umrah Elit',
                       'Rp 33.500.000/orang',
                       const Color(0xFFFAD961),
@@ -145,7 +147,6 @@ class _PaketUmrahState extends State<PaketUmrah> {
                   ],
                 ),
               ),
-
 
               // Jadwal Keberangkatan Section
               Padding(
@@ -320,7 +321,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
     );
   }
 
-    Widget _buildUmrahPackageCard(
+  Widget _buildUmrahPackageCard(
     String imageAsset,
     String packageName,
     String price,
@@ -418,7 +419,6 @@ class _PaketUmrahState extends State<PaketUmrah> {
     );
   }
 
-
   Widget _buildDepartureScheduleCard(
     String monthYear,
     List<Map<String, String>> packages,
@@ -513,7 +513,12 @@ class _PaketUmrahState extends State<PaketUmrah> {
             Padding(
               padding: const EdgeInsets.only(top: 12.0),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Navigate to the Detailpaket page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Detailpaket()));
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFAD961),
                   padding: const EdgeInsets.symmetric(

@@ -11,6 +11,7 @@ import 'package:tridaya_travel/views/berita.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
+// Provider untuk mengelola index BottomNavigationBar
 class BottomNavigationBarProvider with ChangeNotifier {
   int _selectedIndex = 0;
 
@@ -30,31 +31,33 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // Data berita terbaru
   final List<Map<String, dynamic>> beritaUtamaHome = [
     {
-      "judul": "Kuota Haji 2026 Diumumkan 10 Juli 2025, Kemenag Tunggu Keputusan Saudi",
+      "judul": "Kuota Haji 2026 Diumumkan 10 Juli 2025",
       "waktu": "Baru saja",
-      "gambar": "assets/images/berita1.png",
-      "url": "https://www.suarasurabaya.net/kelanakota/2025/kuota-haji-2026-diumumkan-10-juli-2025-kemenag-tunggu-keputusan-saudi/",
-      "deskripsi": "Informasi terbaru terkait kuota haji 2026."
+      "gambar": "assets/images/berita(1).png",
+      "url":
+          "https://www.suarasurabaya.net/kelanakota/2025/kuota-haji-2026-diumumkan-10-juli-2025-kemenag-tunggu-keputusan-saudi/",
+      "deskripsi": "Informasi terbaru terkait kuota haji 2026.",
     },
     {
-      "judul": "Perluasan Tahap Ketiga Masjidil Haram: Area Luas, Fasilitas Meningkat",
+      "judul": "Perluasan Tahap Ketiga Masjidil Haram",
       "waktu": "Baru saja",
-      "gambar": "assets/images/berita2.png",
-      "url": "https://www.nu.or.id/internasional/perluasan-tahap-ketiga-masjidil-haram-selesai-bisa-tampung-3-juta-orang-4DZ4y",
-      "deskripsi": "Peningkatan fasilitas dan kapasitas Masjidil Haram."
+      "gambar": "assets/images/berita(2).png",
+      "url":
+          "https://www.nu.or.id/internasional/perluasan-tahap-ketiga-masjidil-haram-selesai-bisa-tampung-3-juta-orang-4DZ4y",
+      "deskripsi": "Peningkatan fasilitas dan kapasitas Masjidil Haram.",
     },
     {
-      "judul": "Paviliun Bandara Jeddah, Ruang Singgah Jamaah Haji Penuh Cerita",
+      "judul":
+          "Paviliun Bandara Jeddah, Ruang Singgah Jamaah Haji Penuh Cerita",
       "waktu": "Baru saja",
-      "gambar": "assets/images/berita4.png",
-      "url": "https://rm.id/baca-berita/humaniora/266921/kabar-dari-tanah-suci-paviliun-bandara-jeddah-ruang-singgah-jemaah-haji-penuh-cerita",
-      "deskripsi": "Kisah-kisah menarik dari Paviliun Bandara Jeddah."
+      "gambar": "assets/images/berita(4).png",
+      "url":
+          "https://rm.id/baca-berita/humaniora/266921/kabar-dari-tanah-suci-paviliun-bandara-jeddah-ruang-singgah-jemaah-haji-penuh-cerita",
+      "deskripsi": "Kisah-kisah menarik dari Paviliun Bandara Jeddah.",
     },
   ];
-
   // Fungsi buka url
   Future<void> _bukaUrl(String url) async {
     final Uri uri = Uri.parse(url);
@@ -71,6 +74,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       body: SafeArea(
+        // Wrap with SafeArea
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -121,28 +125,44 @@ class _HomeState extends State<Home> {
                       assetIcon: 'assets/icons/umrah.png',
                       label: "Paket Umrah",
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => PaketUmrah()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PaketUmrah()),
+                        );
                       },
                     ),
                     ServiceIcon(
                       assetIcon: 'assets/icons/cabang.png',
                       label: "Lokasi Cabang",
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LokasiCabang()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LokasiCabang(),
+                          ),
+                        );
                       },
                     ),
                     ServiceIcon(
                       assetIcon: 'assets/icons/sholat.png',
                       label: "Waktu Shalat",
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => WaktuShalat()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WaktuShalat(),
+                          ),
+                        );
                       },
                     ),
                     ServiceIcon(
                       assetIcon: 'assets/icons/faq.png',
                       label: "FAQ",
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Faq()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Faq()),
+                        );
                       },
                     ),
                   ],
@@ -167,7 +187,10 @@ class _HomeState extends State<Home> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Berita()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Berita()),
+                        );
                       },
                       child: textView(
                         EdgeInsets.zero,
@@ -182,28 +205,37 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 12),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  children: [
-                    for (var i = 0; i < 3; i++)
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: i < 2 ? 12 : 0),
-                          child: InkWell(
-                            onTap: () => _bukaUrl(beritaUtamaHome[i]["url"] ?? ""),
-                            child: NewsCardNetwork(
-                              imageUrl: beritaUtamaHome[i]["gambar"] ?? "",
-                              title: beritaUtamaHome[i]["judul"] ?? "",
-                              desc: beritaUtamaHome[i]["deskripsi"] ?? "",
-                            ),
+              // Berita Carousel
+              SizedBox(
+                height: 220, // Adjusted height for the carousel
+                child: PageView.builder(
+                  itemCount: beritaUtamaHome.length,
+                  controller: PageController(
+                    viewportFraction: 0.85,
+                  ), // Show part of the next item for carousel effect
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                      ), // Add padding here
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9, // Adjust aspect ratio as needed
+                        child: InkWell(
+                          onTap:
+                              () =>
+                                  _bukaUrl(beritaUtamaHome[index]["url"] ?? ""),
+                          child: NewsCardNetwork(
+                            imageUrl: beritaUtamaHome[index]["gambar"] ?? "",
+                            title: beritaUtamaHome[index]["judul"] ?? "",
+                            desc: beritaUtamaHome[index]["deskripsi"] ?? "",
                           ),
                         ),
                       ),
-                  ],
+                    );
+                  },
                 ),
               ),
+
               const SizedBox(height: 32),
             ],
           ),
@@ -216,13 +248,22 @@ class _HomeState extends State<Home> {
           bottomNavigationBarProvider.updateIndex(index);
           switch (index) {
             case 1:
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Keberangkatan()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Keberangkatan()),
+              );
               break;
             case 2:
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Panduan()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Panduan()),
+              );
               break;
             case 3:
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Profile()),
+              );
               break;
             default:
           }
@@ -315,14 +356,19 @@ class NewsCardNetwork extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
             child: Image.network(
               imageUrl,
-              height: 100,
+              height: 120, // Adjusted image height
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: 100,
-                color: Colors.grey[300],
-                child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
-              ),
+              errorBuilder:
+                  (context, error, stackTrace) => Container(
+                    height: 100,
+                    color: Colors.grey[300],
+                    child: const Icon(
+                      Icons.broken_image,
+                      size: 40,
+                      color: Colors.grey,
+                    ),
+                  ),
             ),
           ),
           Padding(
