@@ -132,7 +132,7 @@ class OnboardingPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            image,
+            image,            fit: BoxFit.contain,
             height: 250,
           ),
           const SizedBox(height: 40),

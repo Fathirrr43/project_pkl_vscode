@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tridaya_travel/views/home.dart';
 import 'package:tridaya_travel/widgets/textview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,21 +23,6 @@ appBar: AppBar(
     18.0,
   ),
   centerTitle: true,
-  leading: IconButton(
-    icon: Image.asset(
-      'assets/icons/iconback.png',
-      width: 24,
-      height: 24,
-      color: Colors.white,
-    ),
-    onPressed: () {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const Home()), // ganti Home() sesuai nama class halaman home kamu
-        (route) => false,
-      );
-    },
-  ),
   elevation: 0,
 ),
   body: SafeArea(
@@ -90,7 +74,7 @@ appBar: AppBar(
                             const SizedBox(height: 2),
                             textView(
                               EdgeInsets.zero,
-                              "Paket ELit",
+                              "Paket Elit",
                               TextAlign.left,
                               const Color(0xFFD6E4FF),
                               FontWeight.normal,

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '/auth/login.dart';
+import 'package:tridaya_travel/auth/onboarding.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(const Duration(milliseconds: 4000), () {
       Navigator.of(
         context,
-      ).pushReplacement(MaterialPageRoute(builder: (context) => Login()));
+      ).pushReplacement(MaterialPageRoute(builder: (context) => OnBoarding()));
     });
   }
 
@@ -82,8 +82,8 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final logoSize = size.width * 0.38;
-    final kabahWidth = size.width * 0.45;
-    final kabahHeight = size.height * 0.18;
+    final kabahWidth = size.width * 0.40; // Keeping the width the same
+    final kabahHeight = size.height * 0.25; // Increased height
 
     return Scaffold(
       body: Stack(

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tridaya_travel/auth/login.dart';
 import 'package:tridaya_travel/auth/onboarding.dart';
 import 'package:tridaya_travel/auth/splashscreen.dart';
-import 'package:tridaya_travel/views/doa.dart';
+// import 'package:tridaya_travel/views/doa.dart';
 import 'package:tridaya_travel/views/faq.dart';
 import 'package:tridaya_travel/views/home.dart';
-import 'package:provider/provider.dart';
+import 'package:tridaya_travel/views/navigation.dart';
 import 'package:tridaya_travel/views/panduan.dart';
 import 'package:tridaya_travel/views/keberangkatan.dart';
 import 'package:tridaya_travel/views/lokasi.dart';
@@ -15,10 +15,7 @@ import 'package:tridaya_travel/views/umrah.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => BottomNavigationBarProvider(),
-      child: const MyApp(),
-    ),
+      const MyApp(),
   );
 }
 
@@ -33,9 +30,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashScreen(),
+        '/': (context) => Login(),
         '/onboarding': (context) => const OnBoarding(),
         '/login': (context) => const Login(),
+        '/navigation': (context) => const Navigation(),
         '/home': (context) => const Home(),
         '/umrah': (context) => const PaketUmrah(),
         '/lokasi': (context) => const LokasiCabang(),

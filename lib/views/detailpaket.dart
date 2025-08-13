@@ -11,8 +11,8 @@ class Detailpaket extends StatefulWidget {
 
 class _DetailpaketState extends State<Detailpaket> {
   final String packageName = 'Umrah Reguler';
-  final String packageDate = '17 Desember 2025';
-  final double packagePriceValue = 30900000;
+  final String packageDate = '09 Desember 2025';
+  final double packagePriceValue = 35500000;
   final String packageDuration = '12 Hari';
 
   final List<Map<String, dynamic>> facilities = [
@@ -21,7 +21,10 @@ class _DetailpaketState extends State<Detailpaket> {
     {'icon': Icons.card_travel, 'text': 'Visa Umrah'},
     {'icon': Icons.airplane_ticket, 'text': 'Tiket pesawat PP'},
     {'icon': Icons.directions_bus, 'text': 'Bus AC antar kota'},
-    {'icon': Icons.card_giftcard, 'text': 'Perlengkapan Umrah (sarung, kain ihram, tas, dll)'},
+    {
+      'icon': Icons.card_giftcard,
+      'text': 'Perlengkapan Umrah (sarung, kain ihram, tas, dll)',
+    },
     {'icon': Icons.local_drink, 'text': 'Air Zamzam 5L (tentatif)'},
     {'icon': Icons.person, 'text': 'Pembimbing & Mutawwif'},
     {'icon': Icons.book, 'text': 'Manasik Umrah sebelum keberangkatan'},
@@ -47,7 +50,9 @@ class _DetailpaketState extends State<Detailpaket> {
     final String phone = "628117891993";
     final String message =
         "Halo, saya ingin memesan paket $packageName untuk $_quantity orang pada tanggal $packageDate. Total harga: ${_formatCurrency(_calculateTotalPrice())}.";
-    final Uri url = Uri.parse("https://wa.me/$phone?text=${Uri.encodeComponent(message)}");
+    final Uri url = Uri.parse(
+      "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
+    );
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -66,7 +71,10 @@ class _DetailpaketState extends State<Detailpaket> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Detail Paket', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Detail Paket',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -95,12 +103,25 @@ class _DetailpaketState extends State<Detailpaket> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.calendar_today, size: 16, color: Colors.orange),
+                      const Icon(
+                        Icons.calendar_today,
+                        size: 16,
+                        color: Colors.orange,
+                      ),
                       const SizedBox(width: 4),
-                      Text(packageDate, style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                      Text(
+                        packageDate,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
                       const Spacer(),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.orange.shade100,
                           borderRadius: BorderRadius.circular(20),
@@ -130,22 +151,24 @@ class _DetailpaketState extends State<Detailpaket> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  ...facilities.map((facility) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(facility['icon'], color: Colors.orange),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                facility['text'],
-                                style: const TextStyle(fontSize: 16),
-                              ),
+                  ...facilities.map(
+                    (facility) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(facility['icon'], color: Colors.orange),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              facility['text'],
+                              style: const TextStyle(fontSize: 16),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   const Text(
                     'Pemesanan',
@@ -157,14 +180,23 @@ class _DetailpaketState extends State<Detailpaket> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.remove_circle, color: Colors.red),
+                        icon: const Icon(
+                          Icons.remove_circle,
+                          color: Colors.red,
+                        ),
                         onPressed: () {
                           if (_quantity > 1) {
                             setState(() => _quantity--);
                           }
                         },
                       ),
-                      Text('$_quantity', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(
+                        '$_quantity',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       IconButton(
                         icon: const Icon(Icons.add_circle, color: Colors.green),
                         onPressed: () {
@@ -177,7 +209,10 @@ class _DetailpaketState extends State<Detailpaket> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Total Harga:', style: TextStyle(fontSize: 16)),
+                      const Text(
+                        'Total Harga:',
+                        style: TextStyle(fontSize: 16),
+                      ),
                       Text(
                         _formatCurrency(_calculateTotalPrice()),
                         style: const TextStyle(

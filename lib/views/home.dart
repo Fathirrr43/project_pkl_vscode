@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tridaya_travel/views/panduan.dart';
-import 'package:tridaya_travel/views/keberangkatan.dart';
-import 'package:tridaya_travel/views/profile.dart';
 import 'package:tridaya_travel/widgets/textview.dart';
 import 'package:tridaya_travel/views/faq.dart' show Faq;
 import 'package:tridaya_travel/views/lokasi.dart';
@@ -9,19 +6,7 @@ import 'package:tridaya_travel/views/shalat.dart';
 import 'package:tridaya_travel/views/umrah.dart';
 import 'package:tridaya_travel/views/berita.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:provider/provider.dart';
 
-// Provider untuk mengelola index BottomNavigationBar
-class BottomNavigationBarProvider with ChangeNotifier {
-  int _selectedIndex = 0;
-
-  int get selectedIndex => _selectedIndex;
-
-  void updateIndex(int index) {
-    _selectedIndex = index;
-    notifyListeners();
-  }
-}
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -68,9 +53,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomNavigationBarProvider =
-        Provider.of<BottomNavigationBarProvider>(context);
-
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
       body: SafeArea(
@@ -241,82 +223,6 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: bottomNavigationBarProvider.selectedIndex,
-        onTap: (index) {
-          bottomNavigationBarProvider.updateIndex(index);
-          switch (index) {
-            case 1:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Keberangkatan()),
-              );
-              break;
-            case 2:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Panduan()),
-              );
-              break;
-            case 3:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Profile()),
-              );
-              break;
-            default:
-          }
-        },
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        showUnselectedLabels: true,
-        selectedItemColor: const Color(0xFF1E4584),
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              bottomNavigationBarProvider.selectedIndex == 0
-                  ? 'assets/icons/beranda2.png'
-                  : 'assets/icons/beranda.png',
-              width: 24,
-              height: 24,
-            ),
-            label: 'Beranda',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              bottomNavigationBarProvider.selectedIndex == 1
-                  ? 'assets/icons/keberangkatan2.png'
-                  : 'assets/icons/keberangkatan.png',
-              width: 24,
-              height: 24,
-            ),
-            label: 'Keberangkatan',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              bottomNavigationBarProvider.selectedIndex == 2
-                  ? 'assets/icons/panduan2.png'
-                  : 'assets/icons/panduan.png',
-              width: 24,
-              height: 24,
-            ),
-            label: 'Panduan',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              bottomNavigationBarProvider.selectedIndex == 3
-                  ? 'assets/icons/profile2.png'
-                  : 'assets/icons/profile.png',
-              width: 24,
-              height: 24,
-            ),
-            label: 'Profile',
-          ),
-        ],
-      ),
     );
   }
 }
@@ -354,7 +260,7 @@ class NewsCardNetwork extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-            child: Image.network(
+            child: Image.asset(
               imageUrl,
               height: 120, // Adjusted image height
               width: double.infinity,

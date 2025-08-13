@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tridaya_travel/auth/login.dart';
-import 'package:tridaya_travel/views/home.dart'; // Import your Home page
+
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -57,17 +57,6 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: ImageIcon(AssetImage('assets/icons/iconback.png'), size: 24.0),
-          color: Colors.black, // Explicitly set the color to black
-          onPressed: () {
-            // Navigate back to the home page
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const Home()),
-            );
-          },
-        ),
         title: const Text('Profil Saya', style: TextStyle(color: Colors.black)),
         centerTitle: true,
         elevation: 0,

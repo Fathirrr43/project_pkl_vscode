@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
 import 'package:tridaya_travel/auth/lupasandi.dart';
 import 'package:tridaya_travel/auth/register.dart';
 
-
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -30,8 +29,8 @@ class _LoginState extends State<Login> {
       print('Password: ${_passwordController.text}');
       // TODO: Implement actual login logic (e.g., Firebase Auth)
 
-      // After successful login, navigate to home page
-      Navigator.pushReplacementNamed(context, '/home');
+      // After successful login, navigate to navigation page
+      Navigator.pushReplacementNamed(context, '/navigation');
     }
   }
 
@@ -53,7 +52,7 @@ class _LoginState extends State<Login> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0), // Increased padding
-//  automaticallyImplyLeading: false,
+        //  automaticallyImplyLeading: false,
         child: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -80,6 +79,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 32.0),
                   TextFormField(
+                    autofillHints: const <String>[],
                     controller: _emailController,
                     decoration: InputDecoration(
                       hintText: 'Masukkan Email',
