@@ -104,48 +104,86 @@ class _ProfileState extends State<Profile> {
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 20),
-              Row(
+              Column(
                 children: [
-                  Expanded(
-                    child: Card(
-                      elevation: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Tanggal Keberangkatan'),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Belum ada',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                  // Tanggal Keberangkatan
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 12), // jarak antar box
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF6FF), // biru muda
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF3B82F6), // biru icon bg
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: const ImageIcon(
+                            AssetImage('assets/icons/jadwal.png'),
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text("Tanggal Keberangkatan",
+                                style: TextStyle(color: Colors.black54)),
+                            SizedBox(height: 4),
+                            Text("09 Desember 2025",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        )
+                      ],
                     ),
                   ),
-                  Expanded(
-                    child: Card(
-                      elevation: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Status'),
-                            const SizedBox(height: 5),
-                            Text(
-                              'Belum Verifikasi',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
+
+                  // Status
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0FDF4), // hijau muda
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF22C55E), // hijau icon bg
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: const ImageIcon(
+                            AssetImage('assets/icons/status.png'),
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text("Status", style: TextStyle(color: Colors.black54)),
+                            SizedBox(height: 4),
+                            Text("Terdaftar",
+                                style:
+                                    TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ],
               ),
+
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {},

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'dart:convert';
 
 class Panduan extends StatefulWidget {
   const Panduan({super.key});
@@ -10,424 +9,457 @@ class Panduan extends StatefulWidget {
   State<Panduan> createState() => _PanduanState();
 }
 
-class _PanduanState extends State<Panduan> {
-  int selectedTab = 0; // 0: Panduan, 1: Doa
+class _PanduanState extends State<Panduan> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  List<dynamic> doaList = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    fetchDoa();
+  }
+
+  Future<void> fetchDoa() async {
+    final response = await http.get(
+      Uri.parse("https://YOUR_MOCKAPI_URL/doa"), // ganti dengan url MockAPI doa
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        doaList = json.decode(response.body);
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
-    // Warna untuk tab
-    final Color activeTabColor = const Color(0xFFD4AF37);
-    final Color inactiveTabColor = Colors.white;
-    final Color activeTextColor = const Color(0xFF1B3557);
-    final Color inactiveTextColor = Colors.black54;
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F3E9),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Header Blue Gradient
-            Container(
-              width: double.infinity,
-              height: 90,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF1B3557), Color(0xFF3A7BD5)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(18),
-                  bottomRight: Radius.circular(18),
-                ),
+      backgroundColor: const Color(0xFFFDF6EC),
+      body: Column(
+        children: [
+          // ================= HEADER =================
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Panduan Ibadah",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      "Umrah & Haji",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                  ],
-                ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+              image: DecorationImage(
+                image: AssetImage("assets/images/masjid.png"),
+                fit: BoxFit.cover,
+                opacity: 0.15,
               ),
             ),
-            const SizedBox(height: 18),
-            // Tab Panduan & Doa
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: Container(
-                height: 54,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+            child: Column(
+              children: const [
+                Text(
+                  "Panduan Ibadah",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    // Tab Panduan
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedTab = 0;
-                          });
-                        },
-                        child: Container(
-                          height: 44,
+                SizedBox(height: 4),
+                Text(
+                  "Umrah & Haji",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // ================= CUSTOM TAB =================
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                )
+              ],
+            ),
+            child: Row(
+              children: [
+                // TAB PANDUAN
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _tabController.animateTo(0),
+                    child: AnimatedBuilder(
+                      animation: _tabController,
+                      builder: (context, _) {
+                        final isSelected = _tabController.index == 0;
+                        return Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                            gradient:
-                                selectedTab == 0
-                                    ? const LinearGradient(
-                                      colors: [
-                                        Color(0xFFD4AF37),
-                                        Color(0xFFF6E7B4),
-                                      ],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    )
-                                    : null,
-                            color: selectedTab == 0 ? null : inactiveTabColor,
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: isSelected
+                                ? const LinearGradient(
+                                    colors: [Color(0xFFD4AF37), Color(0xFFF1E6B2)],
+                                  )
+                                : null,
+                            color: isSelected ? null : Colors.white,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
-                              Image.asset(
-                                'assets/icons/panduan2.png',
-                                width: 24,
-                                height: 24,
-                                color:
-                                    selectedTab == 0
-                                        ? activeTextColor
-                                        : inactiveTextColor,
+                              Icon(
+                                Icons.menu_book,
+                                color: isSelected ? Colors.black : Colors.grey,
                               ),
-                              const SizedBox(width: 8),
                               Text(
                                 "Panduan",
                                 style: TextStyle(
-                                  color:
-                                      selectedTab == 0
-                                          ? activeTextColor
-                                          : inactiveTextColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
+                                  color: isSelected ? Colors.black : Colors.grey,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                    // Tab Doa
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedTab = 1;
-                          });
-                        },
-                        child: Container(
-                          height: 44,
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                // TAB DOA
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _tabController.animateTo(1),
+                    child: AnimatedBuilder(
+                      animation: _tabController,
+                      builder: (context, _) {
+                        final isSelected = _tabController.index == 1;
+                        return Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                            gradient:
-                                selectedTab == 1
-                                    ? const LinearGradient(
-                                      colors: [
-                                        Color(0xFFD4AF37),
-                                        Color(0xFFF6E7B4),
-                                      ],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    )
-                                    : null,
-                            color: selectedTab == 1 ? null : inactiveTabColor,
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: isSelected
+                                ? const LinearGradient(
+                                    colors: [Color(0xFFD4AF37), Color(0xFFF1E6B2)],
+                                  )
+                                : null,
+                            color: isSelected ? null : Colors.white,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
                               Icon(
                                 Icons.self_improvement,
-                                color:
-                                    selectedTab == 1
-                                        ? activeTextColor
-                                        : inactiveTextColor,
-                                size: 24,
+                                color: isSelected ? Colors.black : Colors.grey,
                               ),
-                              const SizedBox(width: 8),
                               Text(
                                 "Doa",
                                 style: TextStyle(
-                                  color:
-                                      selectedTab == 1
-                                          ? activeTextColor
-                                          : inactiveTextColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
+                                  color: isSelected ? Colors.black : Colors.grey,
                                 ),
                               ),
                             ],
                           ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // ===== ISI TAB =====
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // TAB PANDUAN
+                SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18.0),
+                        child: Text(
+                          "Panduan Umrah",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color(0xFFD4AF37),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Column(
+                          children: [
+                            _PanduanBox(
+                        number: 1,
+                        title: "Niat Umrah & Ihram",
+                        desc: "Berniat umrah di miqat, talbiyah",
+                        icon: Image.asset(
+                          'assets/icons/kaabah.png',
+                          width: 20,
+                          height: 20,
+                          color: const Color(0xFF1B3557),
+                        ),
+                        iconColor: const Color(0xFF1B3557),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 2,
+                        title: "Tawaf",
+                        desc: "Mengelilingi Ka'bah 7 kali",
+                        icon: const Icon(Icons.account_balance),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 3,
+                        title: "Shalat Sunnah di Maqam Ibrahim",
+                        desc: "Shalat 2 rakaat",
+                        icon: const Icon(Icons.mosque),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 4,
+                        title: "Minum Air Zamzam",
+                        desc: "Minum sambil berdoa",
+                        icon: const Icon(Icons.water_drop),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 5,
+                        title: "Sa'i",
+                        desc: "Berjalan 7 kali Shafa-Marwah",
+                        icon: const Icon(Icons.directions_walk),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 6,
+                        title: "Tahallul",
+                        desc:
+                            "Memotong atau mencukur rambut sebagai tanda selesainya umrah",
+                        icon: const Icon(Icons.content_cut),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 7,
+                        title: "Selesai",
+                        desc:
+                            "Umrah selesai, ibadah dapat dilanjutkan dengan amalan sunnah lainnya",
+                        icon: const Icon(Icons.check_circle_outline),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18.0),
+                        child: Text(
+                          "Panduan Haji",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color(0xFFD4AF37),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Column(
+                          children: [
+                            _PanduanBox(
+                        number: 1,
+                        title: "Niat Haji & Ihram",
+                        desc: "Berniat haji di miqat, talbiyah",
+                        icon: const Icon(Icons.groups),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 2,
+                        title: "Wukuf di Arafah",
+                        desc:
+                            "Berdiam, berdoa, dan berzikir di Padang Arafah pada 9 Dzulhijjah",
+                        icon: const Icon(Icons.landscape),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 3,
+                        title: "Mabit di Muzdalifah",
+                        desc:
+                            "Menginap di Muzdalifah dan mengumpulkan batu untuk jumrah",
+                        icon: const Icon(Icons.nights_stay),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 4,
+                        title: "Melempar Jumrah Aqabah",
+                        desc:
+                            "Melempar 7 batu kerikil ke Jumrah Aqabah pada 10 Dzulhijjah",
+                        icon: const Icon(Icons.sports_baseball),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 5,
+                        title: "Penyembelihan Hewan",
+                        desc: "Menyembelih hewan kurban (bagi yang wajib)",
+                        icon: const Icon(Icons.set_meal),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 6,
+                        title: "Tahallul Awal",
+                        desc:
+                            "Mencukur atau memotong rambut, sebagian larangan ihram sudah boleh",
+                        icon: const Icon(Icons.content_cut),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 7,
+                        title: "Tawaf Ifadah",
+                        desc:
+                            "Mengelilingi Ka'bah 7 kali, dilanjutkan dengan Sa’i",
+                        icon: const Icon(Icons.account_balance),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 8,
+                        title: "Mabit di Mina",
+                        desc: "Menginap di Mina pada hari Tasyriq",
+                        icon: const Icon(Icons.hotel),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 9,
+                        title: "Melempar Tiga Jumrah",
+                        desc:
+                            "Melempar Jumrah Ula, Wustha, dan Aqabah di hari Tasyriq",
+                        icon: const Icon(Icons.sports),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                      _PanduanBox(
+                        number: 10,
+                        title: "Tawaf Wada",
+                        desc:
+                            "Tawaf perpisahan sebelum meninggalkan Mekkah",
+                        icon: const Icon(Icons.airplane_ticket),
+                        iconColor: const Color(0xFFD4AF37),
+                        numberBg: const Color(0xFFD4AF37),
+                        titleColor: const Color(0xFF1B3557),
+                      ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+
+                // TAB DOA (data dari API)
+                isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(12),
+                        itemCount: doaList.length,
+                        itemBuilder: (context, index) {
+                          final doa = doaList[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 3,
+                            child: ListTile(
+                              title: Text(
+                                doa['title'] ?? '',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1B3557)),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 6),
+                                  Text(doa['arabic'] ?? '',
+                                      style: const TextStyle(fontSize: 16)),
+                                  const SizedBox(height: 6),
+                                  Text(doa['latin'] ?? '',
+                                      style: const TextStyle(
+                                          fontStyle: FontStyle.italic)),
+                                  const SizedBox(height: 6),
+                                  Text(doa['translation'] ?? ''),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ],
             ),
-            const SizedBox(height: 18),
-            // Content
-            if (selectedTab == 0) ...[
-              // Label Panduan Umrah
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                child: Row(
-                  children: const [
-                    Text(
-                      "Panduan Umrah",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Color(0xFF1B3557),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Langkah-langkah Umrah
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    _PanduanBox(
-                      number: 1,
-                      title: "Niat Umrah & Ihram",
-                      desc: "Berniat umrah di miqat, talbiyah",
-                      icon: Image.asset(
-                        'assets/icons/kaabah.png',
-                        width: 20,
-                        height: 20,
-                        color: const Color(0xFF1B3557),
-                      ),
-                      iconColor: const Color(0xFF1B3557),
-                      numberBg: const Color(0xFFD4AF37),
-                      titleColor: const Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 2,
-                      title: "Tawaf",
-                      desc: "Mengelilingi Ka'bah 7 kali",
-                      icon:  Icon(Icons.account_balance), // Ganti dengan asset nanti
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 3,
-                      title: "Shalat Sunnah di Maqam Ibrahim",
-                      desc: "Shalat 2 rakaat",
-                      icon: Icon(Icons.mosque), // Ganti dengan asset nanti
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 4,
-                      title: "Minum Air Zamzam",
-                      desc: "Minum sambil berdoa",
-                      icon: Icon(Icons.water_drop), // Ganti dengan asset nanti
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 5,
-                      title: "Sa'i",
-                      desc: "Berjalan 7 kali Shafa-Marwah",
-                      icon: Icon(Icons.directions_walk), // Ganti dengan asset nanti
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 6,
-                      title: "Tahallul",
-                      desc:
-                          "Memotong atau mencukur rambut sebagai tanda selesainya umrah",
-                      icon:
-                          Icon(Icons.content_cut), // Ganti icon dengan asset jika ada
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 7,
-                      title: "Selesai",
-                      desc:
-                          "Umrah selesai, ibadah dapat dilanjutkan dengan amalan sunnah lainnya",
-                      icon: Icon(Icons.check_circle_outline),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              // Label Panduan Haji
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                child: Row(
-                  children: const [
-                    Text(
-                      "Panduan Haji",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Color(0xFFD4AF37),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Langkah-langkah Haji
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Column(
-                  children: [
-                    _PanduanBox(
-                      number: 1,
-                      title: "Niat Haji & Ihram",
-                      desc: "Berniat haji di miqat, talbiyah",
-                      icon: Icon(Icons.groups),
-                      iconColor: Color(0xFFFD4AF37),
-                      numberBg: Color(0xFFFD4AF37),
-                      titleColor: Color(0xFFFD4AF37),
-                    ),
-                    _PanduanBox(
-                      number: 2,
-                      title: "Wukuf di Arafah",
-                      desc:
-                          "Berdiam, berdoa, dan berzikir di Padang Arafah pada 9 Dzulhijjah",
-                      icon: Icon(Icons.landscape),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 3,
-                      title: "Mabit di Muzdalifah",
-                      desc:
-                          "Menginap di Muzdalifah dan mengumpulkan batu untuk jumrah",
-                      icon: Icon(Icons.nights_stay),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 4,
-                      title: "Melempar Jumrah Aqabah",
-                      desc:
-                          "Melempar 7 batu kerikil ke Jumrah Aqabah pada 10 Dzulhijjah",
-                      icon: Icon(Icons.sports_baseball),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 5,
-                      title: "Penyembelihan Hewan",
-                      desc: "Menyembelih hewan kurban (bagi yang wajib)",
-                      icon: Icon(Icons.set_meal),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 6,
-                      title: "Tahallul Awal",
-                      desc:
-                          "Mencukur atau memotong rambut, sebagian larangan ihram sudah boleh",
-                      icon: Icon(Icons.content_cut),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 7,
-                      title: "Tawaf Ifadah",
-                      desc:
-                          "Mengelilingi Ka'bah 7 kali, dilanjutkan dengan Sa’i",
-                      icon: Icon(Icons.account_balance),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 8,
-                      title: "Mabit di Mina",
-                      desc: "Menginap di Mina pada hari Tasyriq",
-                      icon: Icon(Icons.hotel),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 9,
-                      title: "Melempar Tiga Jumrah",
-                      desc:
-                          "Melempar Jumrah Ula, Wustha, dan Aqabah di hari Tasyriq",
-                      icon: Icon(Icons.sports),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                    _PanduanBox(
-                      number: 10,
-                      title: "Tawaf Wada",
-                      desc: "Tawaf perpisahan sebelum meninggalkan Mekkah",
-                      icon: Icon(Icons.airplane_ticket),
-                      iconColor: Color(0xFFD4AF37),
-                      numberBg: Color(0xFFD4AF37),
-                      titleColor: Color(0xFF1B3557),
-                    ),
-                  ],
-                ),
-              ),
-            ] else ...[
-              // Doa Page
-              // ...masukkan widget page doa di sini...
-            ],
-            const SizedBox(height: 24),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -451,70 +483,26 @@ class _PanduanBox extends StatelessWidget {
     required this.iconColor,
     required this.numberBg,
     required this.titleColor,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: numberBg,
+          child: Text(
+            number.toString(),
+            style: const TextStyle(color: Colors.white),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Number Circle
-          CircleAvatar(
-            backgroundColor: numberBg,
-            radius: 18,
-            child: Text(
-              "$number",
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Texts
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: titleColor,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  desc,
-                  style: const TextStyle(color: Colors.black54, fontSize: 13),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Icon
-          CircleAvatar(
-            backgroundColor: iconColor.withOpacity(0.12),
-            radius: 18,
-            child: icon,
-          ),
-        ],
+        ),
+        title: Text(title,
+            style: TextStyle(fontWeight: FontWeight.bold, color: titleColor)),
+        subtitle: Text(desc),
+        trailing: icon,
       ),
     );
   }

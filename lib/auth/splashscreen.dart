@@ -10,10 +10,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
   late AnimationController _starController;
-  late AnimationController _kabahController;
   late AnimationController _logoOutlineController;
   late AnimationController _logoFillController;
   late AnimationController _textController;
@@ -26,11 +24,6 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(seconds: 4),
     )..repeat();
-
-    _kabahController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
 
     _logoOutlineController = AnimationController(
       vsync: this,
@@ -49,29 +42,25 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Animation sequence
     Future.delayed(const Duration(milliseconds: 400), () {
-      _kabahController.forward();
-    });
-    Future.delayed(const Duration(milliseconds: 1400), () {
       _logoOutlineController.forward();
     });
-    Future.delayed(const Duration(milliseconds: 2100), () {
+    Future.delayed(const Duration(milliseconds: 1100), () {
       _logoFillController.forward();
     });
-    Future.delayed(const Duration(milliseconds: 2800), () {
+    Future.delayed(const Duration(milliseconds: 1800), () {
       _textController.forward();
     });
 
-    Timer(const Duration(milliseconds: 4000), () {
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (context) => OnBoarding()));
+    Timer(const Duration(milliseconds: 3000), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const OnBoarding()),
+      );
     });
   }
 
   @override
   void dispose() {
     _starController.dispose();
-    _kabahController.dispose();
     _logoOutlineController.dispose();
     _logoFillController.dispose();
     _textController.dispose();
@@ -82,8 +71,6 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final logoSize = size.width * 0.38;
-    final kabahWidth = size.width * 0.40; // Keeping the width the same
-    final kabahHeight = size.height * 0.25; // Increased height
 
     return Scaffold(
       body: Stack(
@@ -98,7 +85,8 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
           ),
-          // Floating stars/particles
+
+          // Floating stars
           AnimatedBuilder(
             animation: _starController,
             builder: (context, child) {
@@ -108,44 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
               );
             },
           ),
-          // Ka'bah silhouette fade in with glow
-          AnimatedBuilder(
-            animation: _kabahController,
-            builder: (context, child) {
-              return Center(
-                child: Opacity(
-                  opacity: _kabahController.value,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Glow behind Ka'bah
-                      Container(
-                        width: kabahWidth * 1.2,
-                        height: kabahHeight * 1.2,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: RadialGradient(
-                            colors: [
-                              Colors.amber.shade100.withOpacity(
-                                0.5 * _kabahController.value,
-                              ),
-                              Colors.transparent,
-                            ],
-                            stops: const [0.4, 1.0],
-                          ),
-                        ),
-                      ),
-                      // Ka'bah silhouette (replace with your own asset if available)
-                      CustomPaint(
-                        size: Size(kabahWidth, kabahHeight),
-                        painter: _KabahPainter(),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+
           // Logo outline drawing
           AnimatedBuilder(
             animation: _logoOutlineController,
@@ -158,7 +109,8 @@ class _SplashScreenState extends State<SplashScreen>
               );
             },
           ),
-          // Logo fill with gradient and light
+
+          // Logo fill with gradient
           AnimatedBuilder(
             animation: _logoFillController,
             builder: (context, child) {
@@ -177,7 +129,6 @@ class _SplashScreenState extends State<SplashScreen>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
@@ -198,6 +149,7 @@ class _SplashScreenState extends State<SplashScreen>
               );
             },
           ),
+
           // Text fade in
           AnimatedBuilder(
             animation: _textController,
@@ -234,7 +186,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-// Painter for floating stars/particles
+// Painter for floating stars
 class _StarryNightPainter extends CustomPainter {
   final double progress;
   final List<Offset> _stars = [];
@@ -256,8 +208,8 @@ class _StarryNightPainter extends CustomPainter {
     final paint = Paint()..color = Colors.white.withOpacity(0.7);
     for (int i = 0; i < _starCount; i++) {
       final dx = _stars[i].dx * size.width;
-      final dy =
-          (_stars[i].dy * size.height + progress * 30 * (i % 2 == 0 ? 1 : -1)) %
+      final dy = (_stars[i].dy * size.height +
+              progress * 30 * (i % 2 == 0 ? 1 : -1)) %
           size.height;
       canvas.drawCircle(Offset(dx, dy), _sizes[i], paint);
     }
@@ -267,61 +219,6 @@ class _StarryNightPainter extends CustomPainter {
   bool shouldRepaint(covariant _StarryNightPainter oldDelegate) => true;
 }
 
-// Painter for Ka'bah silhouette
-class _KabahPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final base = Rect.fromLTWH(
-      size.width * 0.18,
-      size.height * 0.45,
-      size.width * 0.64,
-      size.height * 0.38,
-    );
-    final paint = Paint()..color = Colors.black.withOpacity(0.92);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(base, Radius.circular(size.width * 0.05)),
-      paint,
-    );
-    // Gold band
-    final gold = Paint()..color = Colors.amber.shade200;
-    canvas.drawRect(
-      Rect.fromLTWH(
-        base.left,
-        base.top + base.height * 0.18,
-        base.width,
-        base.height * 0.09,
-      ),
-      gold,
-    );
-    // Door
-    final door = Paint()..color = Colors.amber.shade100;
-    canvas.drawRect(
-      Rect.fromLTWH(
-        base.left + base.width * 0.7,
-        base.top + base.height * 0.55,
-        base.width * 0.18,
-        base.height * 0.28,
-      ),
-      door,
-    );
-    // Glow
-    final glow =
-        Paint()
-          ..color = Colors.amber.shade100.withOpacity(0.18)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        base.inflate(10),
-        Radius.circular(size.width * 0.07),
-      ),
-      glow,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 // Painter for logo outline animation
 class _LogoOutlinePainter extends CustomPainter {
   final double progress;
@@ -329,39 +226,38 @@ class _LogoOutlinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.white.withOpacity(0.8)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = size.width * 0.07
-          ..strokeCap = StrokeCap.round;
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.07
+      ..strokeCap = StrokeCap.round;
 
-    // Simple outline: rounded rectangle (replace with your logo path for more detail)
     final rect = Rect.fromLTWH(
       size.width * 0.08,
       size.height * 0.08,
       size.width * 0.84,
       size.height * 0.84,
     );
+
     final rrect = RRect.fromRectAndRadius(
       rect,
       Radius.circular(size.width * 0.18),
     );
+
     final path = Path()..addRRect(rrect);
 
     final totalLength = path.computeMetrics().fold(
-      0.0,
-      (sum, m) => sum + m.length,
-    );
+          0.0,
+          (sum, m) => sum + m.length,
+        );
     final currentLength = totalLength * progress;
 
     var drawn = 0.0;
     for (final metric in path.computeMetrics()) {
       final len = metric.length;
-      final drawLen =
-          (drawn + len <= currentLength)
-              ? len
-              : (currentLength - drawn).clamp(0, len);
+      final drawLen = (drawn + len <= currentLength)
+          ? len
+          : (currentLength - drawn).clamp(0, len);
       if (drawLen > 0) {
         final extract = metric.extractPath(0, drawLen.toDouble());
         canvas.drawPath(extract, paint);
