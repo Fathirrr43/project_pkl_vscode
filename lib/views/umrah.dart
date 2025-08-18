@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tridaya_travel/widgets/textview.dart';
-import 'package:tridaya_travel/views/detailpaket.dart'; // Import your Detailpaket page
+import 'package:tridaya_travel/views/detailpaket.dart';
 
 
 class PaketUmrah extends StatefulWidget {
@@ -199,7 +199,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                   {
                     'packageName': 'Umrah Reguler',
                     'facilities': 'fasilitas, jadwal, hotel sama',
-                    'priceStatus': 'Rp. 32.500.000',
+                    'priceStatus': 'Rp. 33.500.000',
                   },
                 ],
                 const Color(0xFF242D3A),
@@ -212,7 +212,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                   {
                     'packageName': 'Umrah Reguler',
                     'facilities': 'fasilitas, jadwal, hotel sama',
-                    'priceStatus': 'Rp. 32.500.000',
+                    'priceStatus': 'Rp. 28.900.000',
                   },
                 ],
                 const Color(0xFF242D3A),
@@ -225,7 +225,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                   {
                     'packageName': 'Umrah Reguler',
                     'facilities': 'fasilitas, jadwal, hotel sama',
-                    'priceStatus': 'Rp. 32.500.000',
+                    'priceStatus': 'Rp. 35.500.000',
                   },
                 ],
                 const Color(0xFF242D3A),
@@ -510,32 +510,35 @@ class _PaketUmrahState extends State<PaketUmrah> {
           ),
 
           if (showButton)
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to the Detailpaket page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Detailpaket()));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFAD961),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+            // Button to check the Umrah package details
+            Center( // Center the button horizontally
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the Detailpaket page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Detailpaket()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFAD961),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                  child: textView(
+                    EdgeInsets.zero,
+                    "Check Paket Umroh",
+                    TextAlign.center,
+                    Colors.black87,
+                    FontWeight.bold,
+                    14.0,
                   ),
-                ),
-                child: textView(
-                  EdgeInsets.zero,
-                  "Check Paket Umroh",
-                  TextAlign.center,
-                  Colors.black87,
-                  FontWeight.bold,
-                  14.0,
                 ),
               ),
             ),

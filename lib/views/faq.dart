@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tridaya_travel/views/home.dart';
+import 'package:tridaya_travel/views/navigation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Faq extends StatefulWidget {
@@ -66,10 +66,10 @@ class _FaqState extends State<Faq> {
             color: Color(0xFFFFFFFF), // White color
           ),
           onPressed: () {
-            // Navigate back to the home page
+            // Navigate back to the navigation page
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const Home()),
+              MaterialPageRoute(builder: (context) => const Navigation()),
             );
           },
         ),

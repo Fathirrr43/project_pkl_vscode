@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tridaya_travel/auth/lupasandi.dart';
 import 'package:tridaya_travel/auth/register.dart';
 import 'package:tridaya_travel/auth/auth_service.dart'; // tambahkan ini
 

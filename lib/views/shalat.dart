@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tridaya_travel/views/home.dart';
+import 'package:tridaya_travel/views/navigation.dart';
 
 class WaktuShalat extends StatefulWidget {
   const WaktuShalat({super.key});
@@ -95,11 +95,11 @@ class _WaktuShalatState extends State<WaktuShalat> {
                               iconSize: 24, //adjust icon size
                               color: Colors.white,
                               onPressed: () {
-                                // Navigate back to the home page
+                                // Navigate back to the navigattion page
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const Home(),
+                                    builder: (context) => const Navigation(),
                                   ),
                                 );
                               },
