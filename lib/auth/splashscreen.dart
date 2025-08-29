@@ -1,8 +1,10 @@
-import 'dart:async';
-import 'dart:math';
+// Import library bawaan Flutter dan package yang dibutuhkan
+import 'dart:async'; // untuk Timer
+import 'dart:math'; // untuk random posisi bintang
 import 'package:flutter/material.dart';
-import 'package:tridaya_travel/auth/onboarding.dart';
+import 'package:tridaya_travel/auth/onboarding.dart'; // halaman tujuan setelah splash
 
+// Widget utama SplashScreen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -10,7 +12,9 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
+// State untuk mengatur animasi
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+  // Controller animasi untuk bintang, logo outline, logo isi, dan teks
   late AnimationController _starController;
   late AnimationController _logoOutlineController;
   late AnimationController _logoFillController;
@@ -20,37 +24,42 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   void initState() {
     super.initState();
 
+    // Animasi bintang berulang
     _starController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
-    )..repeat();
+    )..repeat(); // animasi berulang tanpa henti
 
+    // Animasi garis outline logo
     _logoOutlineController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
 
+    // Animasi isi/logo terisi warna
     _logoFillController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
 
+    // Animasi munculnya teks
     _textController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
 
-    // Animation sequence
+    // Urutan animasi agar lebih halus
     Future.delayed(const Duration(milliseconds: 400), () {
-      _logoOutlineController.forward();
+      _logoOutlineController.forward(); // gambar outline dulu
     });
     Future.delayed(const Duration(milliseconds: 1100), () {
-      _logoFillController.forward();
+      _logoFillController.forward(); // kemudian isi logo
     });
     Future.delayed(const Duration(milliseconds: 1800), () {
-      _textController.forward();
+      _textController.forward(); // terakhir teks
     });
 
+    // Setelah 3 detik, pindah ke halaman OnBoarding
     Timer(const Duration(milliseconds: 3000), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const OnBoarding()),
@@ -60,6 +69,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   @override
   void dispose() {
+    // Membersihkan controller animasi agar tidak boros memori
     _starController.dispose();
     _logoOutlineController.dispose();
     _logoFillController.dispose();
@@ -69,13 +79,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final logoSize = size.width * 0.38;
+    final size = MediaQuery.of(context).size; // ukuran layar
+    final logoSize = size.width * 0.38; // ukuran logo
 
     return Scaffold(
-      body: Stack(
+      body: Stack( // menggunakan Stack agar bisa overlay komponen
         children: [
-          // Midnight blue gradient background
+          // Background dengan warna gradasi biru tua
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -86,18 +96,18 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             ),
           ),
 
-          // Floating stars
+          // Lapisan bintang bergerak
           AnimatedBuilder(
             animation: _starController,
             builder: (context, child) {
               return CustomPaint(
                 size: size,
-                painter: _StarryNightPainter(_starController.value),
+                painter: _StarryNightPainter(_starController.value), // custom painter
               );
             },
           ),
 
-          // Logo outline drawing
+          // Animasi garis outline logo
           AnimatedBuilder(
             animation: _logoOutlineController,
             builder: (context, child) {
@@ -110,13 +120,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             },
           ),
 
-          // Logo fill with gradient
+          // Isi logo dengan efek gradasi
           AnimatedBuilder(
             animation: _logoFillController,
             builder: (context, child) {
               return Center(
                 child: Opacity(
-                  opacity: _logoFillController.value,
+                  opacity: _logoFillController.value, // perlahan muncul
                   child: Container(
                     width: logoSize,
                     height: logoSize,
@@ -141,7 +151,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       ],
                     ),
                     child: Image.asset(
-                      'assets/images/logo.png',
+                      'assets/images/logo.png', // logo utama
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -150,7 +160,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             },
           ),
 
-          // Text fade in
+          // Animasi teks fade-in
           AnimatedBuilder(
             animation: _textController,
             builder: (context, child) {
@@ -186,19 +196,20 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 }
 
-// Painter for floating stars
+// CustomPainter untuk menggambar bintang yang melayang
 class _StarryNightPainter extends CustomPainter {
   final double progress;
-  final List<Offset> _stars = [];
-  final List<double> _sizes = [];
-  final int _starCount = 32;
-  final Random _random = Random(2024);
+  final List<Offset> _stars = []; // posisi bintang
+  final List<double> _sizes = []; // ukuran bintang
+  final int _starCount = 32; // jumlah bintang
+  final Random _random = Random(2024); // random generator tetap
 
   _StarryNightPainter(this.progress) {
+    // Inisialisasi posisi bintang hanya sekali
     if (_stars.isEmpty) {
       for (int i = 0; i < _starCount; i++) {
         _stars.add(Offset(_random.nextDouble(), _random.nextDouble()));
-        _sizes.add(1.5 + _random.nextDouble() * 2.5);
+        _sizes.add(1.5 + _random.nextDouble() * 2.5); // variasi ukuran bintang
       }
     }
   }
@@ -207,10 +218,10 @@ class _StarryNightPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = Colors.white.withOpacity(0.7);
     for (int i = 0; i < _starCount; i++) {
-      final dx = _stars[i].dx * size.width;
+      final dx = _stars[i].dx * size.width; // posisi horizontal
       final dy = (_stars[i].dy * size.height +
               progress * 30 * (i % 2 == 0 ? 1 : -1)) %
-          size.height;
+          size.height; // posisi vertikal bergerak naik-turun
       canvas.drawCircle(Offset(dx, dy), _sizes[i], paint);
     }
   }
@@ -219,7 +230,7 @@ class _StarryNightPainter extends CustomPainter {
   bool shouldRepaint(covariant _StarryNightPainter oldDelegate) => true;
 }
 
-// Painter for logo outline animation
+// CustomPainter untuk menggambar outline logo
 class _LogoOutlinePainter extends CustomPainter {
   final double progress;
   _LogoOutlinePainter(this.progress);
@@ -232,6 +243,7 @@ class _LogoOutlinePainter extends CustomPainter {
       ..strokeWidth = size.width * 0.07
       ..strokeCap = StrokeCap.round;
 
+    // Membuat bentuk kotak dengan sudut tumpul
     final rect = Rect.fromLTWH(
       size.width * 0.08,
       size.height * 0.08,
@@ -246,11 +258,12 @@ class _LogoOutlinePainter extends CustomPainter {
 
     final path = Path()..addRRect(rrect);
 
+    // Hitung total panjang path
     final totalLength = path.computeMetrics().fold(
           0.0,
           (sum, m) => sum + m.length,
         );
-    final currentLength = totalLength * progress;
+    final currentLength = totalLength * progress; // bagian yang digambar sesuai progress
 
     var drawn = 0.0;
     for (final metric in path.computeMetrics()) {
@@ -260,7 +273,7 @@ class _LogoOutlinePainter extends CustomPainter {
           : (currentLength - drawn).clamp(0, len);
       if (drawLen > 0) {
         final extract = metric.extractPath(0, drawLen.toDouble());
-        canvas.drawPath(extract, paint);
+        canvas.drawPath(extract, paint); // menggambar path
       }
       drawn += len;
       if (drawn >= currentLength) break;

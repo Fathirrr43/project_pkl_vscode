@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:tridaya_travel/auth/login.dart';
 import 'package:tridaya_travel/auth/onboarding.dart';
@@ -13,10 +14,10 @@ import 'package:tridaya_travel/views/profile.dart';
 import 'package:tridaya_travel/views/shalat.dart';
 import 'package:tridaya_travel/views/umrah.dart';
 
-void main() {
-  runApp(
-      const MyApp(),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashScreen(),
+        '/': (context) => Navigation(),
         '/onboarding': (context) => const OnBoarding(),
         '/login': (context) => const Login(),
         '/navigation': (context) => const Navigation(),

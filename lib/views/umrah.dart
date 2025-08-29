@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tridaya_travel/widgets/textview.dart';
 import 'package:tridaya_travel/views/detailpaket.dart';
 
-
 class PaketUmrah extends StatefulWidget {
   const PaketUmrah({super.key});
 
@@ -45,7 +44,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                       children: [
                         textView(
                           EdgeInsets.zero,
-                          'Muhammad Fathir Alfarici',
+                          'Muhammad Fathir Alfarizi',
                           TextAlign.left,
                           const Color.fromARGB(255, 255, 255, 255),
                           FontWeight.bold,
@@ -139,7 +138,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                       const Color(0xFFFBC02D),
                       const Color(0xFF242D3A),
                       const Color(0xFF242D3A),
-                      const Color(0xFFFFFFFF),  // Text color for button
+                      const Color(0xFFFFFFFF), // Text color for button
                       const Color(0xFF242D3A), // Button color
                     ),
                     const SizedBox(width: 16),
@@ -511,7 +510,8 @@ class _PaketUmrahState extends State<PaketUmrah> {
 
           if (showButton)
             // Button to check the Umrah package details
-            Center( // Center the button horizontally
+            Center(
+              // Center the button horizontally
               child: Padding(
                 padding: const EdgeInsets.only(top: 12.0),
                 child: ElevatedButton(
@@ -519,7 +519,8 @@ class _PaketUmrahState extends State<PaketUmrah> {
                     // Navigate to the Detailpaket page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Detailpaket()));
+                      MaterialPageRoute(builder: (context) => Detailpaket()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFAD961),

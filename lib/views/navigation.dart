@@ -75,7 +75,7 @@ class _NavigationState extends State<Navigation> {
               width: 24,
               height: 24,
             ),
-            label: 'Profile',
+            label: 'Profil',
           ),
         ],
       ),

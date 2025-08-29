@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "750379307999",
+    "project_id": "tridaya-travel",
+    "storage_bucket": "tridaya-travel.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750379307999:android:065c06a56ea1c36aba6a6a",
+        "android_client_info": {
+          "package_name": "com.example.tridaya_travel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz4ovzxW0II3e0GnlFU2uTSmupk9nc4yU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

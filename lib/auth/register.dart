@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
-// Import your Login page
+import 'package:google_fonts/google_fonts.dart'; // Import package Google Fonts untuk styling font
 
+// Halaman Register (Sign Up)
 class Register extends StatefulWidget {
   const Register({super.key});
 
@@ -10,7 +12,10 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  // Key untuk validasi form
   final _formKey = GlobalKey<FormState>();
+
+  // Controller untuk input text
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -18,6 +23,7 @@ class _RegisterState extends State<Register> {
 
   @override
   void dispose() {
+    // Pastikan controller dibuang dari memori saat widget tidak digunakan
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
@@ -25,81 +31,132 @@ class _RegisterState extends State<Register> {
     super.dispose();
   }
 
-  void _registerUser() {
+  // Fungsi untuk memproses registrasi
+  void _registerUser() async {
     if (_formKey.currentState!.validate()) {
-      // Process registration
-      print('First Name: ${_firstNameController.text}');
-      print('Last Name: ${_lastNameController.text}');
-      print('Email: ${_emailController.text}');
-      print('Password: ${_passwordController.text}');
-      // TODO: Implement actual registration logic (e.g., Firebase Auth)
+      try {
+        // Buat akun di Firebase Auth
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim(),
+            );
 
-      // After successful registration, navigate to login or home
-      // Navigator.pushReplacementNamed(context, '/login'); // Example navigation
+        // Ambil UID user
+        String uid = userCredential.user!.uid;
+
+        // Simpan data tambahan ke Firestore
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'firstName': _firstNameController.text.trim(),
+          'lastName': _lastNameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        // Pindah ke halaman login atau home
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Registrasi berhasil! Silakan login.'),
+            ),
+          );
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = '';
+        if (e.code == 'weak-password') {
+          errorMessage = 'Password terlalu lemah.';
+        } else if (e.code == 'email-already-in-use') {
+          errorMessage = 'Email sudah terdaftar.';
+        } else if (e.code == 'invalid-email') {
+          errorMessage = 'Format email tidak valid.';
+        } else {
+          errorMessage = 'Terjadi kesalahan. ${e.message}';
+        }
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(errorMessage)));
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // AppBar bagian atas halaman
       appBar: AppBar(
         title: Text(
           'Sign Up',
           style: GoogleFonts.poppins(
-            // Using Poppins as an example font
+            // Pakai font Poppins dari Google Fonts
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),
-        backgroundColor: Colors.transparent, // Make app bar transparent
-        elevation: 0, // Remove shadow
-        iconTheme: IconThemeData(color: Colors.black), // Set back button color
-        centerTitle: true,
+        backgroundColor:
+            Colors.transparent, // Membuat background AppBar transparan
+        elevation: 0, // Menghilangkan shadow bawah AppBar
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ), // Warna ikon (panah kembali)
+        centerTitle: true, // Judul di tengah
       ),
-      // extendBodyBehindAppBar: true, // Extend body behind app bar
+
+      // Body halaman
       body: Padding(
-        padding: const EdgeInsets.all(24.0), // Increased padding
+        padding: const EdgeInsets.all(24.0), // Jarak luar 24px
         child: Center(
           child: SingleChildScrollView(
+            // Supaya bisa di-scroll jika layar kecil
             child: Form(
-              key: _formKey,
+              key: _formKey, // Hubungkan Form dengan _formKey untuk validasi
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Align text to start
+                crossAxisAlignment: CrossAxisAlignment.start, // rata kiri
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  // Judul
                   Text(
                     'Buat akun Anda',
                     style: GoogleFonts.poppins(
-                      // Using Poppins
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
+
+                  // Sub-judul
                   Text(
                     'Daftar untuk memulai perjalanan Anda',
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       color: Colors.grey[600],
-                    ), // Using Poppins
+                    ),
                   ),
-                  SizedBox(height: 32.0),
+                  const SizedBox(height: 32.0),
+
+                  // Input nama depan & belakang dalam 1 baris
                   Row(
                     children: [
+                      // Input Nama Depan
                       Expanded(
                         child: TextFormField(
                           controller: _firstNameController,
                           decoration: InputDecoration(
                             hintText: 'Nama Depan',
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: Colors.grey[200], // background abu-abu
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide.none,
+                              borderSide:
+                                  BorderSide.none, // hilangkan border default
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16.0,
                               vertical: 14.0,
                             ),
@@ -112,7 +169,8 @@ class _RegisterState extends State<Register> {
                           },
                         ),
                       ),
-                      SizedBox(width: 16.0),
+                      const SizedBox(width: 16.0), // jarak antar input
+                      // Input Nama Belakang
                       Expanded(
                         child: TextFormField(
                           controller: _lastNameController,
@@ -124,7 +182,7 @@ class _RegisterState extends State<Register> {
                               borderRadius: BorderRadius.circular(8.0),
                               borderSide: BorderSide.none,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16.0,
                               vertical: 14.0,
                             ),
@@ -139,7 +197,10 @@ class _RegisterState extends State<Register> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.0),
+
+                  const SizedBox(height: 16.0),
+
+                  // Input Email
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -150,7 +211,7 @@ class _RegisterState extends State<Register> {
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16.0,
                         vertical: 14.0,
                       ),
@@ -160,16 +221,16 @@ class _RegisterState extends State<Register> {
                       if (value == null || value.isEmpty) {
                         return 'Email tidak boleh kosong';
                       }
-                      // Basic email format validation
                       if (!value.contains('@') || !value.contains('.')) {
                         return 'Masukkan format email yang valid';
                       }
                       return null;
                     },
                   ),
-                  SizedBox(height: 16.0),
 
-                  //tampilan password
+                  const SizedBox(height: 16.0),
+
+                  // Input Password
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -180,13 +241,12 @@ class _RegisterState extends State<Register> {
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16.0,
                         vertical: 14.0,
                       ),
                     ),
-                    obscureText: true,
-                    //validasi password
+                    obscureText: true, // supaya password disembunyikan
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Password tidak boleh kosong';
@@ -197,14 +257,17 @@ class _RegisterState extends State<Register> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 24.0),
+
+                  const SizedBox(height: 24.0),
+
+                  // Tombol Daftar
                   SizedBox(
-                    width: double.infinity,
+                    width: double.infinity, // full width
                     child: ElevatedButton(
-                      onPressed: _registerUser,
+                      onPressed: _registerUser, // Panggil fungsi registrasi
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1E4584), // Warna biru tua
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        backgroundColor: const Color(0xFF1E4584), // biru tua
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
                         textStyle: GoogleFonts.poppins(
                           fontSize: 18,
                           color: Colors.white,
@@ -213,41 +276,42 @@ class _RegisterState extends State<Register> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                             12.0,
-                          ), // Lebih presisi dan modern
+                          ), // sudut rounded
                         ),
                         elevation: 2,
                       ),
                       child: Text(
                         'Buat Akun',
                         style: GoogleFonts.poppins(
-                          color: Colors.white, // Warna font putih agar kontras
+                          color: Colors.white,
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.0),
+
+                  const SizedBox(height: 16.0),
+
+                  // Link ke halaman Login
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         'Anda sudah punya akun?',
-                        style: GoogleFonts.poppins(), // Using Poppins
+                        style: GoogleFonts.poppins(),
                       ),
                       TextButton(
                         onPressed: () {
-                          // TODO: Navigate to Login Page
-                          Navigator.pop(
-                            context,
-                          ); // Example: pop back to previous screen
+                          // kembali ke halaman sebelumnya (misalnya halaman login)
+                          Navigator.pop(context);
                         },
                         child: Text(
                           'Login',
                           style: GoogleFonts.poppins(
-                            color: Color(0xFF1900A6),
+                            color: const Color(0xFF1900A6),
                             fontWeight: FontWeight.bold,
-                          ), // Using Poppins
+                          ),
                         ),
                       ),
                     ],

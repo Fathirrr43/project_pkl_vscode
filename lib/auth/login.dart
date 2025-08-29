@@ -1,7 +1,13 @@
+// Import library Flutter
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+// Import package google_fonts untuk custom font (harus install dulu di pubspec.yaml)
 import 'package:google_fonts/google_fonts.dart';
+
+// Import halaman Register (navigasi jika user belum punya akun)
 import 'package:tridaya_travel/auth/register.dart';
-import 'package:tridaya_travel/auth/auth_service.dart'; // tambahkan ini
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,49 +17,90 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  // Key untuk validasi form
   final _formKey = GlobalKey<FormState>();
+
+  // Controller untuk input email & password
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService(); // instance API service
 
-  bool _isLoading = false; // untuk indikator loading
+  // Flag untuk menandai apakah sedang loading atau tidak
+  bool _isLoading = false;
 
   @override
   void dispose() {
+    // Buang controller ketika widget tidak dipakai lagi (hindari memory leak)
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  // Fungsi login user
   void _loginUser() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
+      try {
+        // Login ke Firebase Auth
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
 
-      final success = await _authService.login(email, password);
+        // Ambil UID user
+        String uid = userCredential.user!.uid;
+
+        // Ambil data user dari Firestore
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .get();
+
+        if (userDoc.exists) {
+          final userData = userDoc.data() as Map<String, dynamic>;
+          print("Nama: ${userData['firstName']} ${userData['lastName']}");
+          print("Email: ${userData['email']}");
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Login berhasil!')),
+            );
+            Navigator.pushReplacementNamed(context, '/navigation');
+          }
+        } else {
+          // Kalau user tidak ditemukan di Firestore
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Data user tidak ditemukan di Firestore')),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = '';
+        if (e.code == 'user-not-found') {
+          errorMessage = 'Email tidak terdaftar.';
+        } else if (e.code == 'wrong-password') {
+          errorMessage = 'Password salah.';
+        } else {
+          errorMessage = 'Login gagal. ${e.message}';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
 
       setState(() => _isLoading = false);
-
-      if (success) {
-        // jika login berhasil
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Login berhasil')));
-        Navigator.pushReplacementNamed(context, '/navigation');
-      } else {
-        // jika login gagal
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Email atau password salah')));
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // AppBar dengan logo
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(top: 16.0),
@@ -67,20 +114,23 @@ class _LoginState extends State<Login> {
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
-          child: SingleChildScrollView(
+          child: SingleChildScrollView( // biar bisa scroll kalau keyboard muncul
             child: Form(
-              key: _formKey,
+              key: _formKey, // form validasi
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  // Judul
                   Text(
                     'Selamat Datang',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.poppins( // pakai Google Fonts
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 8.0),
+
+                  // Subjudul
                   Text(
                     'Masuk untuk melanjutkan perjalanan Anda',
                     style: GoogleFonts.poppins(
@@ -89,6 +139,8 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   SizedBox(height: 32.0),
+
+                  // Input Email
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -115,6 +167,8 @@ class _LoginState extends State<Login> {
                     },
                   ),
                   SizedBox(height: 16.0),
+
+                  // Input Password
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -130,7 +184,7 @@ class _LoginState extends State<Login> {
                         vertical: 14.0,
                       ),
                     ),
-                    obscureText: true,
+                    obscureText: true, // sembunyikan password
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Password tidak boleh kosong';
@@ -139,6 +193,8 @@ class _LoginState extends State<Login> {
                     },
                   ),
                   SizedBox(height: 24.0),
+
+                  // Tombol Login
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -151,20 +207,21 @@ class _LoginState extends State<Login> {
                         ),
                         elevation: 2,
                       ),
-                      child:
-                          _isLoading
-                              ? CircularProgressIndicator(color: Colors.white)
-                              : Text(
-                                'Login',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
+                      child: _isLoading
+                          ? CircularProgressIndicator(color: Colors.white) // tampil loading
+                          : Text(
+                              'Login',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
                               ),
+                            ),
                     ),
                   ),
                   SizedBox(height: 16.0),
+
+                  // Link ke halaman register
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

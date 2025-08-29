@@ -9,7 +9,7 @@ class WaktuShalat extends StatefulWidget {
 }
 
 class _WaktuShalatState extends State<WaktuShalat> {
- // Dummy data for prayer times
+  // Dummy data waktu shalat (nanti bisa diganti dengan API atau data dinamis)
   final List<Map<String, dynamic>> _prayerTimes = [
     {
       'name': 'Subuh',
@@ -39,7 +39,7 @@ class _WaktuShalatState extends State<WaktuShalat> {
       'name': 'Isya',
       'time': '19:21 WIB',
       'icon': Icons.mode_night,
-      'isCurrent': true,
+      'isCurrent': false,
     },
   ];
 
@@ -50,11 +50,12 @@ class _WaktuShalatState extends State<WaktuShalat> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Header section
+            // Bagian header (gambar latar + overlay + judul halaman)
             Stack(
               children: [
+                // Background image
                 Container(
-                  height: 250, // Adjust height as needed
+                  height: 250,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/waktusholat.png'),
@@ -62,40 +63,34 @@ class _WaktuShalatState extends State<WaktuShalat> {
                     ),
                   ),
                 ),
-                // Gradient overlay
+                // Overlay gradient agar teks lebih terbaca
                 Container(
-                  height: 250, // Match image container height
+                  height: 250,
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black54, // Darken the image slightly
-                      ],
+                      colors: [Colors.transparent, Colors.black54],
                     ),
                   ),
                 ),
+                // Konten header (tombol back + judul + jam saat ini)
                 SafeArea(
-                  // Add SafeArea to avoid status bar overlap
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
-                      // Main column for header content
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Baris atas (tombol kembali + judul halaman)
                         Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment
-                                  .spaceBetween, // Distribute space
-                          // Row for back button and title
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
                               icon: const Icon(Icons.arrow_back),
-                              iconSize: 24, //adjust icon size
+                              iconSize: 24,
                               color: Colors.white,
                               onPressed: () {
-                                // Navigate back to the navigattion page
+                                // Navigasi kembali ke halaman Navigation
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -105,7 +100,6 @@ class _WaktuShalatState extends State<WaktuShalat> {
                               },
                             ),
                             const Expanded(
-                              // Flexible space for the title
                               child: Text(
                                 'Waktu Sholat',
                                 style: TextStyle(
@@ -117,13 +111,13 @@ class _WaktuShalatState extends State<WaktuShalat> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20), // Add spacing
+                        const SizedBox(height: 20),
+                        // Menampilkan jam sekarang & info shalat berikutnya
                         Center(
-                          // Center the time and next prayer info
                           child: Column(
                             children: [
                               const Text(
-                                '08:34', // Replace with actual current time
+                                '08:34', // Waktu saat ini (nanti bisa dibuat dinamis)
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 48,
@@ -132,7 +126,7 @@ class _WaktuShalatState extends State<WaktuShalat> {
                               ),
                               const SizedBox(height: 4),
                               const Text(
-                                'Isya dalam 1 jam 11 menit', // Replace with actual next prayer info
+                                'Isya dalam 1 jam 11 menit', // Info shalat berikutnya
                                 style: TextStyle(
                                   color: Colors.white70,
                                   fontSize: 16,
@@ -147,7 +141,7 @@ class _WaktuShalatState extends State<WaktuShalat> {
                 ),
               ],
             ),
-            // Date section
+            // Bagian tanggal (Masehi & Hijriah)
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
@@ -157,14 +151,14 @@ class _WaktuShalatState extends State<WaktuShalat> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Jumat, 1 Agustus 2025', // Replace with actual date
+                    'Jumat, 1 Agustus 2025', // Tanggal masehi (statis, bisa diganti API)
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '7 Shafar 1447H', // Replace with actual Islamic date
+                    '7 Shafar 1447H', // Tanggal hijriah (statis, bisa diganti API)
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey.shade600,
                     ),
@@ -172,7 +166,7 @@ class _WaktuShalatState extends State<WaktuShalat> {
                 ],
               ),
             ),
-            // Prayer times list
+            // Daftar waktu shalat
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -194,7 +188,7 @@ class _WaktuShalatState extends State<WaktuShalat> {
   }
 }
 
-// Custom widget for Prayer Time Tile
+/// Widget custom untuk menampilkan satu item waktu shalat
 class PrayerTimeTileContent extends StatefulWidget {
   final String name;
   final String time;
@@ -214,6 +208,7 @@ class PrayerTimeTileContent extends StatefulWidget {
 }
 
 class _PrayerTimeTileContentState extends State<PrayerTimeTileContent> {
+  // State untuk menyimpan status notifikasi
   bool _isNotificationEnabled = false;
 
   @override
@@ -222,6 +217,7 @@ class _PrayerTimeTileContentState extends State<PrayerTimeTileContent> {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
+          // Icon waktu shalat
           CircleAvatar(
             radius: 20,
             backgroundColor:
@@ -235,6 +231,7 @@ class _PrayerTimeTileContentState extends State<PrayerTimeTileContent> {
             ),
           ),
           const SizedBox(width: 16),
+          // Nama & waktu shalat
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,6 +260,7 @@ class _PrayerTimeTileContentState extends State<PrayerTimeTileContent> {
               ],
             ),
           ),
+          // Tombol notifikasi (toggle on/off)
           GestureDetector(
             onTap: () {
               setState(() {

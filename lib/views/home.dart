@@ -7,7 +7,6 @@ import 'package:tridaya_travel/views/umrah.dart';
 import 'package:tridaya_travel/views/berita.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class Home extends StatefulWidget {
   const Home({super.key});
 

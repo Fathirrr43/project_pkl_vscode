@@ -243,7 +243,7 @@ class _FaqState extends State<Faq> {
                                       onPressed: () async {
                                         final phone = '6282164462940';
                                         final message = Uri.encodeComponent(
-                                          'assallamualaikum warahmatullahi wabarakatuh/salam',
+                                          'assalamuallaikum warahmatullahi wabarakatuh/salam',
                                         );
                                         final url =
                                             'https://wa.me/$phone?text=$message';
