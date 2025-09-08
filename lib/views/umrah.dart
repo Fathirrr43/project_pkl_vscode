@@ -21,24 +21,36 @@ class _PaketUmrahState extends State<PaketUmrah> {
             children: [
               // Profile Header
               Container(
-                color: Color(0xFF242D3A), // Set background color here
+                color: const Color(0xFF242D3A),
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
+                    // Tombol back
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context); // kembali ke halaman sebelumnya
+                      },
+                    ),
+                    const SizedBox(width: 8),
+
+                    // Foto profil dengan border
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Color(0xFFF4C95D), // Border color
+                          color: const Color(0xFFF4C95D), // Border color
                           width: 2.0, // Border width
                         ),
                       ),
-                      child: CircleAvatar(
+                      child: const CircleAvatar(
                         backgroundImage: AssetImage('assets/images/pp.png'),
                         radius: 20,
                       ),
                     ),
                     const SizedBox(width: 10),
+
+                    // Nama dan lokasi user
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -61,7 +73,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                               EdgeInsets.zero,
                               'Palembang, Indonesia',
                               TextAlign.left,
-                              Color(0xFFF4C95D),
+                              const Color(0xFFF4C95D),
                               FontWeight.normal,
                               12.0,
                             ),
@@ -72,7 +84,6 @@ class _PaketUmrahState extends State<PaketUmrah> {
                   ],
                 ),
               ),
-
               // Paket Umrah Title
               Padding(
                 padding: const EdgeInsets.symmetric(

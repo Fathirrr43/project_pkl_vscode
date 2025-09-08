@@ -159,37 +159,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               );
             },
           ),
-
-          // Animasi teks fade-in
-          AnimatedBuilder(
-            animation: _textController,
-            builder: (context, child) {
-              return Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: size.height * 0.12),
-                  child: Opacity(
-                    opacity: _textController.value,
-                    child: Text(
-                      "Tridaya Tour & Travel",
-                      style: TextStyle(
-                        fontSize: size.width * 0.055,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.amber.shade100,
-                        letterSpacing: 1.2,
-                        shadows: [
-                          Shadow(
-                            color: Colors.white.withOpacity(0.25),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
         ],
       ),
     );
