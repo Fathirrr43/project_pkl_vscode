@@ -32,7 +32,7 @@ class _PaketUmrahState extends State<PaketUmrah> {
                         Navigator.pop(context); // kembali ke halaman sebelumnya
                       },
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
 
                     // Foto profil dengan border
                     Container(

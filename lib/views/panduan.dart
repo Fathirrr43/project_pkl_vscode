@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -14,18 +15,29 @@ class _PanduanState extends State<Panduan> with SingleTickerProviderStateMixin {
   List<dynamic> doaList = [];
   bool isLoading = true;
 
+  // 🔊 Tambahan untuk audio
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  String? _currentAudio;
+  bool _isPlaying = false;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     fetchDoa();
+
+    // kalau audio selesai, otomatis balik ke state awal
+    _audioPlayer.onPlayerComplete.listen((event) {
+      setState(() {
+        _isPlaying = false;
+        _currentAudio = null;
+      });
+    });
   }
 
   Future<void> fetchDoa() async {
     final response = await http.get(
-      Uri.parse(
-        "https://689ca29758a27b18087eea08.mockapi.io/doa",
-      ), // url MockAPI tab doa
+      Uri.parse("https://689ca29758a27b18087eea08.mockapi.io/doa"),
     );
     if (response.statusCode == 200) {
       setState(() {
@@ -39,9 +51,29 @@ class _PanduanState extends State<Panduan> with SingleTickerProviderStateMixin {
     }
   }
 
+  Future<void> _playAudio(String fileName) async {
+    // kalau lagi play audio yang sama → stop
+    if (_isPlaying && _currentAudio == fileName) {
+      await _audioPlayer.stop();
+      setState(() {
+        _isPlaying = false;
+        _currentAudio = null;
+      });
+      return;
+    }
+
+    // play dari folder assets/audio
+    await _audioPlayer.play(AssetSource("audio/$fileName"));
+    setState(() {
+      _isPlaying = true;
+      _currentAudio = fileName;
+    });
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -196,6 +228,7 @@ class _PanduanState extends State<Panduan> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
+
           // ===== ISI TAB =====
           Expanded(
             child: TabBarView(
@@ -422,7 +455,7 @@ class _PanduanState extends State<Panduan> with SingleTickerProviderStateMixin {
                   ),
                 ),
 
-                // TAB DOA (data dari API)
+                // TAB DOA (data dari API + audio)
                 isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ListView.builder(
@@ -463,6 +496,22 @@ class _PanduanState extends State<Panduan> with SingleTickerProviderStateMixin {
                                 Text(doa['arti'] ?? ''),
                               ],
                             ),
+                            trailing:
+                                doa['audio'] != null &&
+                                        doa['audio'].toString().isNotEmpty
+                                    ? IconButton(
+                                      icon: Icon(
+                                        _isPlaying &&
+                                                _currentAudio == doa['audio']
+                                            ? Icons.stop
+                                            : Icons.play_arrow,
+                                        color: const Color(0xFFD4AF37),
+                                      ),
+                                      onPressed: () {
+                                        _playAudio(doa['audio']);
+                                      },
+                                    )
+                                    : null,
                           ),
                         );
                       },
